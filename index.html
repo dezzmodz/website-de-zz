@@ -1,260 +1,145 @@
-<!DOCTYPE html>
-<html lang="id">
+<!DOCTYPE html><html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DezZ | JJ Motion Mods</title>
+<title>DezZ | JJ Motion Mods</title><style>
+body{margin:0;font-family:Poppins;background:#0f0f0f;color:white}
+.header{padding:15px;background:#1a1a1a}
+button{padding:10px;border:none;border-radius:8px;background:#00ffcc;font-weight:bold;cursor:pointer}
+input,textarea{width:100%;padding:10px;margin-top:5px;border:none;border-radius:8px;background:#2a2a2a;color:white}
+.mods{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:10px}
+.card{background:#1c1c1c;border-radius:10px;overflow:hidden}
+.card img{width:100%;height:120px;object-fit:cover}
+.preview img{width:70px;height:70px;margin:3px;border-radius:6px}
 
-<style>
-body{
-  margin:0;
-  font-family:Poppins,sans-serif;
-  background:#0f0f0f;
-  color:white;
-}
+/* viewer */
+.viewer{position:fixed;inset:0;background:#000;display:none;justify-content:center;align-items:center}
+.viewer img{max-width:90%;max-height:80%}
+.nav{position:absolute;top:50%;font-size:30px;cursor:pointer}
+.prev{left:10px}.next{right:10px}
+.close{position:absolute;top:10px;right:15px;font-size:25px}
+</style></head><body><div class="header">
+<h2>DezZ | JJ Motion âš¡</h2>
+</div><div style="padding:10px">
+<h3>Upload Mod</h3><input id="title" placeholder="Judul">
+<textarea id="desc" placeholder="Deskripsi"></textarea>
+<input id="link" placeholder="Link Download (drive/mediafire)">
+<input type="file" id="images" multiple accept="image/*"><div class="preview" id="preview"></div><button onclick="uploadMod()">UPLOAD</button>
 
-.header{
-  padding:15px;
-  background:#1a1a1a;
-  display:flex;
-  justify-content:space-between;
-}
-
-button{
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#00ffcc;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-input, textarea{
-  width:100%;
-  padding:10px;
-  margin-top:5px;
-  border:none;
-  border-radius:8px;
-  background:#2a2a2a;
-  color:white;
-}
-
-.mods{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:10px;
-  padding:10px;
-}
-
-.card{
-  background:#1c1c1c;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.card img{
-  width:100%;
-  height:120px;
-  object-fit:cover;
-}
-
-.upload-box{
-  padding:10px;
-}
-
-.preview img{
-  width:70px;
-  height:70px;
-  object-fit:cover;
-  border-radius:6px;
-  margin:3px;
-}
-
-/* SLIDER */
-.viewer{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-}
-
-.viewer img{
-  max-width:90%;
-  max-height:80%;
-}
-
-.nav{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:30px;
-  cursor:pointer;
-  padding:10px;
-}
-
-.prev{left:10px;}
-.next{right:10px;}
-.close{top:10px; right:15px; position:absolute; font-size:25px;}
-</style>
-</head>
-
-<body>
-
-<div class="header">
-  <h2>DezZ | JJ Motion ⚡</h2>
-  <button onclick="login()">LOGIN</button>
-</div>
-
-<div class="upload-box">
-  <h3>Upload Mod</h3>
-  <input id="title" placeholder="Judul">
-  <textarea id="desc" placeholder="Deskripsi"></textarea>
-  <input id="link" placeholder="Link Download">
-
-  <input type="file" id="images" multiple accept="image/*">
-  <div class="preview" id="preview"></div>
-
-  <button onclick="uploadMod()">UPLOAD</button>
-</div>
-
-<div class="mods" id="mods"></div>
-
-<!-- VIEWER -->
-<div class="viewer" id="viewer">
-  <span class="close" onclick="closeViewer()">✖</span>
-  <span class="nav prev" onclick="prevImg()">❮</span>
-  <img id="viewerImg">
-  <span class="nav next" onclick="nextImg()">❯</span>
-</div>
-
-<script type="module">
+</div><div class="mods" id="mods"></div><div class="viewer" id="viewer">
+<span class="close" onclick="closeViewer()">âœ–</span>
+<span class="nav prev" onclick="prevImg()">â®</span>
+<img id="viewerImg">
+<span class="nav next" onclick="nextImg()">â¯</span>
+</div><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
 
-/* CONFIG */
+/* ðŸ”¥ CONFIG (ISI PUNYA LU) */
 const firebaseConfig = {
   apiKey: "AIzaSyBaneJ6aJod2I3cNuofct-QMTdeXyfxlps",
-  authDomain: "dezzpanel.firebaseapp.com",
+    authDomain: "dezzpanel.firebaseapp.com",
   projectId: "dezzpanel",
-  storageBucket: "dezzpanel.firebasestorage.app"
+  storageBucket: "dezzpanel.firebasestorage.app",
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-let currentUser=null;
-
-/* LOGIN */
-window.login = function(){
-  const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider)
-  .then(res=>{
-    currentUser=res.user;
-    alert("Login: "+res.user.displayName);
-  });
-}
-
 /* PREVIEW */
-let selectedFiles=[];
-document.getElementById("images").addEventListener("change",e=>{
-  selectedFiles=[...e.target.files];
-  let html="";
-  selectedFiles.forEach(f=>{
-    let url=URL.createObjectURL(f);
-    html+=`<img src="${url}">`;
+let files = [];
+
+document.getElementById("images").onchange = (e) => {
+  files = [...e.target.files];
+
+  const preview = document.getElementById("preview");
+  preview.innerHTML = "";
+
+  files.forEach(f => {
+    let url = URL.createObjectURL(f);
+    preview.innerHTML += `<img src="${url}">`;
   });
-  document.getElementById("preview").innerHTML=html;
-});
+};
 
 /* UPLOAD */
-window.uploadMod = async function(){
-  if(!currentUser) return alert("Login dulu");
+window.uploadMod = async () => {
+  let title = document.getElementById("title").value.trim();
+  let desc = document.getElementById("desc").value.trim();
+  let link = document.getElementById("link").value.trim();
 
-  let title=titleInput.value;
-  let desc=descInput.value;
-  let link=linkInput.value;
+  if (!title || !link) return alert("Isi dulu!");
+  if (files.length === 0) return alert("Upload gambar dulu!");
 
-  if(!title || !link) return alert("Isi data!");
-
-  let urls=[];
-
-  for(let file of selectedFiles){
-    let storageRef = ref(storage, "mods/"+Date.now()+"_"+file.name);
-    await uploadBytes(storageRef,file);
-    let url = await getDownloadURL(storageRef);
-    urls.push(url);
+  if (!link.includes("drive") && !link.includes("mediafire")) {
+    return alert("Link harus drive/mediafire!");
   }
 
-  await addDoc(collection(db,"mods"),{
+  let imgs = [];
+
+  for (let f of files) {
+    let r = ref(storage, "mods/" + Date.now() + "_" + f.name);
+    await uploadBytes(r, f);
+    let url = await getDownloadURL(r);
+    imgs.push(url);
+  }
+
+  await addDoc(collection(db, "mods"), {
     title,
     desc,
     link,
-    images:urls,
-    status:"approved"
+    images: imgs,
+    createdAt: Date.now()
   });
 
-  alert("Upload sukses");
+  alert("Upload berhasil!");
   location.reload();
-}
+};
 
-/* LOAD */
-let viewerImgs=[],currentIndex=0;
+/* LOAD DATA */
+let viewerImgs = [], i = 0;
 
-async function loadMods(){
-  const q=query(collection(db,"mods"),where("status","==","approved"));
-  const snap=await getDocs(q);
+async function loadMods() {
+  let snap = await getDocs(collection(db, "mods"));
+  let html = "";
 
-  let html="";
+  snap.forEach(doc => {
+    let d = doc.data();
+    let img = d.images?.[0] || "";
 
-  snap.forEach(doc=>{
-    let d=doc.data();
-    let img=d.images?.[0] || "";
-
-    html+=`
-    <div class="card" onclick='openViewer(${JSON.stringify(d.images||[])})'>
+    html += `
+    <div class="card" onclick='openViewer(${JSON.stringify(d.images || [])})'>
       <img src="${img}">
-      <div style="padding:8px">
-        <b>${d.title}</b>
-      </div>
-    </div>
-    `;
+      <div style="padding:8px"><b>${d.title}</b></div>
+    </div>`;
   });
 
-  mods.innerHTML=html;
+  document.getElementById("mods").innerHTML = html;
 }
 
 loadMods();
 
-/* SLIDER */
-window.openViewer = function(imgs){
-  viewerImgs=imgs;
-  currentIndex=0;
-  viewer.style.display="flex";
-  viewerImg.src=viewerImgs[0];
-}
+/* VIEWER */
+window.openViewer = (imgs) => {
+  viewerImgs = imgs;
+  i = 0;
+  document.getElementById("viewer").style.display = "flex";
+  document.getElementById("viewerImg").src = viewerImgs[0];
+};
 
-window.closeViewer = function(){
-  viewer.style.display="none";
-}
+window.closeViewer = () => {
+  document.getElementById("viewer").style.display = "none";
+};
 
-window.nextImg = function(){
-  currentIndex=(currentIndex+1)%viewerImgs.length;
-  viewerImg.src=viewerImgs[currentIndex];
-}
+window.nextImg = () => {
+  i = (i + 1) % viewerImgs.length;
+  document.getElementById("viewerImg").src = viewerImgs[i];
+};
 
-window.prevImg = function(){
-  currentIndex=(currentIndex-1+viewerImgs.length)%viewerImgs.length;
-  viewerImg.src=viewerImgs[currentIndex];
-}
-
-</script>
-
-</body>
+window.prevImg = () => {
+  i = (i - 1 + viewerImgs.length) % viewerImgs.length;
+  document.getElementById("viewerImg").src = viewerImgs[i];
+};
+</script></body>
 </html>
