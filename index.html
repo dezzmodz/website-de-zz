@@ -3,323 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DEZZ STORE | HOLOGRAM FF</title>
+<title>DezZ | JJ Motion Mods</title>
 
 <style>
-
-/* ===== BODY HOLOGRAM ===== */
 body{
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    text-align:center;
-    background:linear-gradient(135deg,#050522,#0b0b3a,#111166);
-    background-size:400% 400%;
-    animation:bgmove 12s infinite alternate;
-    color:white;
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background:#0f0f0f;
+  color:white;
 }
 
-@keyframes bgmove{
-    0%{background-position:left;}
-    100%{background-position:right;}
+.header{
+  padding:15px;
+  background:#1a1a1a;
+  display:flex;
+  justify-content:space-between;
 }
 
-/* ===== HEADER ===== */
-header{
-    padding:25px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(255,255,255,0.1);
-    box-shadow:0 0 25px rgba(0,0,255,0.3);
+button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:#00ffcc;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-header h1{
-    margin:0;
-    font-size:26px;
-    letter-spacing:1px;
-    color:#fff;
-    text-shadow:0 0 10px #4d6bff;
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
+  border:none;
+  border-radius:8px;
+  background:#2a2a2a;
+  color:white;
 }
 
-.tag{
-    color:#b8c1ff;
-    font-size:14px;
+.mods{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:10px;
+  padding:10px;
 }
 
-/* ===== SECTION CARD ===== */
-.section{
-    margin:25px auto;
-    max-width:420px;
-    padding:20px;
-    border-radius:16px;
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(255,255,255,0.1);
-    box-shadow:
-        0 0 20px rgba(0,0,255,0.2),
-        inset 0 0 10px rgba(255,255,255,0.05);
+.card{
+  background:#1c1c1c;
+  border-radius:10px;
+  overflow:hidden;
 }
 
-.section h2{
-    margin-top:0;
-    color:#8ea2ff;
-    text-shadow:0 0 8px #3c52ff;
+.card img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
 }
 
-/* ===== BUTTON HOLOGRAM ===== */
-.download-btn{
-    display:block;
-    margin:12px auto;
-    padding:15px;
-    width:90%;
-    text-decoration:none;
-    color:white;
-    border-radius:10px;
-    font-weight:bold;
-    letter-spacing:0.5px;
-
-    background:linear-gradient(45deg,#1a2bff,#6a7bff);
-    box-shadow:
-        0 0 10px #2a3fff,
-        0 0 20px rgba(42,63,255,0.6);
-
-    transition:0.3s;
+.upload-box{
+  padding:10px;
 }
 
-/* efek hover neon */
-.download-btn:hover{
-    transform:translateY(-3px) scale(1.02);
-    background:linear-gradient(45deg,#000,#2a3fff);
-    box-shadow:
-        0 0 15px #5b6bff,
-        0 0 30px #5b6bff;
+.preview img{
+  width:70px;
+  height:70px;
+  object-fit:cover;
+  border-radius:6px;
+  margin:3px;
 }
 
-/* klik effect */
-.download-btn:active{
-    transform:scale(0.97);
+/* SLIDER */
+.viewer{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
 }
 
-/* ===== FOOTER ===== */
-footer{
-    margin:35px 0;
-    font-size:13px;
-    color:#9aa4ff;
-    text-shadow:0 0 6px rgba(120,140,255,0.5);
-}
-/* ===== LOADER ===== */
-#loader{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:#020617;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
-    color:#6b7cff;
-    font-weight:bold;
-}
-.logo-center{
-    position:absolute;
-    width:150px;
-    top:20%;
-    left:20%;
-    transform:translate(39%,60%);
-    filter:drop-shadow(0 0 15px #00ffe0);
+.viewer img{
+  max-width:90%;
+  max-height:80%;
 }
 
-/* ===== PARTICLE BACKGROUND ===== */
-#particles{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:-1;
+.nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:30px;
+  cursor:pointer;
+  padding:10px;
 }
 
-/* ===== PAGE FADE ===== */
-main{
-    animation:fadeIn 1.2s ease;
-}
-
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(20px);}
-    to{opacity:1;transform:translateY(0);}
-}
-
-
+.prev{left:10px;}
+.next{right:10px;}
+.close{top:10px; right:15px; position:absolute; font-size:25px;}
 </style>
-
-<!-- ===== SAFELINKU SCRIPT ===== -->
-<script>
-var go_url = 'https://sfl.gl/';
-var api = '75a1ae514a36f53d1909cc9f25969eec800bde35';
-
-var shorten_includ = [
-"link.dana.id",
-"sub4unlock.co",
-"www.mediafire.com",
-"safefileku.com"
-];
-</script>
-<script src="//safelinku.com/js/web-script.js"></script>
-
 </head>
+
 <body>
-<!-- ===== LOADING HOLOGRAM ===== -->
 
-  <div id="loader">
-  <div class="scan">
-      <img src="https://files.catbox.moe/5pf5s6.jpg" class="logo-center">
-  </div>
-
-  <h2>⚡ LOADING DEZZ STORE...</h2>
+<div class="header">
+  <h2>DezZ | JJ Motion ⚡</h2>
+  <button onclick="login()">LOGIN</button>
 </div>
 
-<canvas id="particles"></canvas>
+<div class="upload-box">
+  <h3>Upload Mod</h3>
+  <input id="title" placeholder="Judul">
+  <textarea id="desc" placeholder="Deskripsi"></textarea>
+  <input id="link" placeholder="Link Download">
 
-<header>
-<h1>🚀 DEZZ HOLOGRAM STORE</h1>
-<div class="tag">Official Web • Creator @DezZXMods</div>
-</header>
+  <input type="file" id="images" multiple accept="image/*">
+  <div class="preview" id="preview"></div>
 
-<!-- ===== SOCIAL ===== -->
-<div class="section">
-<h2>🔥 JOIN KOMUNITAS</h2>
-
-<a class="download-btn" href="https://whatsapp.com/channel/0029Vb7aIVe2UPBK5qaTPP1V" target="_blank">WhatsApp Channel</a>
-<a class="download-btn" href="https://t.me/+nmDgMfjt-t9jYzA1" target="_blank">Telegram</a>
-<a class="download-btn" href="https://tiktok.com/@dezz_realmods" target="_blank">TikTok</a>
-<a class="download-btn" href="https://www.youtube.com/@DezZXMods" target="_blank">YouTube</a>
+  <button onclick="uploadMod()">UPLOAD</button>
 </div>
 
-<!-- === FILE ff ==== -->
-<div class="section">
-<h2>DAFTAR FILE NEW</h2>
-<p> 𝙆𝙡𝙞𝙠 𝙩𝙤𝙢𝙗𝙤𝙡 𝙙𝙞 𝙗𝙖𝙬𝙖𝙝 𝙪𝙣𝙩𝙪𝙠 𝙢𝙚𝙣𝙙𝙤𝙬𝙣𝙡𝙤𝙖𝙙. </p>
-<p>FULL C0NFIG FF, F1L3 FF & P4N3L FF 2026 </p>
+<div class="mods" id="mods"></div>
 
-<a class="download-btn" href="https://sfl.gl/HzFFOd" target="_blank"> C0NFIG FF SG 2 M4MBA TO SG 2 M1NECR4FT </a>
-<a class="download-btn" href="https://sfl.gl/0YXQ" target="_blank"> C0NFIG FF SET ELITE CEES DARI AL0K AWK, HAYATO AWK, MARO </a>
-<a class="download-btn" href="https://sfl.gl/CZb91Z" target="_blank"> C0NFIG FF SG 2 TR0MPET TO SG 2 0PM (SUPP0RT FFBIASA+FFMAX) </a>
-<a class="download-btn" href="https://sfl.gl/LOHTD" target="_blank"> C0NFIG FF SET ELITE CEES B4JU GEN0S CEL4N4 GENJ1 T0PI S2 DARI ALOK AWK </a>
-<a class="download-btn" href="https://sfl.gl/7GIXx" target="_blank"> C0NFIG FF SET KECE DARI KAR4KTER MARO </a>
-<a class="download-btn" href="https://sfl.gl/WJBJSP" target="_blank"> C0NFIG FF SET ELITE CEES DARI HAYATO AWK </a>
-<a class="download-btn" href="https://sfl.gl/VlG33" target="_blank"> C0NFIG FF 4 BUNDL3 BLUE L0CK DARI KAR4KTER ALOK AWK </a>
-
-
-<!-- ===== Atas sini===== -->
-<p>CONFIG ALL SKIN SG NO PW</p>
-<a class="download-btn" href="https://sfl.gl/on12J" target="_blank">SG GOLDEN</a>
-<a class="download-btn" href="https://sfl.gl/xkcp" target="_blank">SG LUMUT</a>
-<a class="download-btn" href="https://sfl.gl/wh5qp4" target="_blank">SG METEOR</a>
-<a class="download-btn" href="https://sfl.gl/wh5qp4" target="_blank">SG MATEL</a>
-<a class="download-btn" href="https://sfl.gl/8DFFo" target="_blank">SG METEOR</a>
-<a class="download-btn" href="https://sfl.gl/r7XlB" target="_blank">SG OPM</a>
-<a class="download-btn" href="https://sfl.gl/hoats" target="_blank">SG WINTER</a>
-<a class="download-btn" href="https://sfl.gl/PnUhNY" target="_blank">SG REAPER</a>
-
-<p>𝘿𝙀𝙕𝙕𝙓𝙋𝙍𝙄𝙑𝘼𝙏𝙀<br>ғʀᴇᴇ ᴅᴏᴡɴʟᴏᴀᴅ ғɪʟᴇ ᴏʀ ᴀᴘᴘ/ᴀᴘᴋ</p>
-<a class="download-btn" href="https://safefileku.com/download/RqTKuk5qwVbXSCAx" target="_blank"> APK UNBAN WA<br>By: AFIF Ganteng ✨ </a>
-<a class="download-btn" href="https://safefileku.com/download/eUSs83Dw3EhFr4a9" target="_blank"> ☀️NEW SCRIP BUG NIKA V21 GEN2 FIX EROR🔥 </a>
-<a class="download-btn" href="https://safefileku.com/download/UjmN2HJVoK4srIks" target="_blank">⚙️ FAKE LAG INFINITO V2 </a>
-<a class="download-btn" href="https://safefileku.com/download/fUvIQ6GInIooXhtN" target="_blank"> FAKE NINJA.apk </a>
-<a class="download-btn" href="https://safefileku.com/download/kkYlc6ijdGzYjCal" target="_blank"> FAKE LAG.apk </a>
-<a class="download-btn" href="https://sfl.gl/koaiKG" target="_blank">⚙️ MT MANAGER</a>
-<a class="download-btn" href="https://sfl.gl/6Ha5cf" target="_blank">🇮🇳 INDIA VPN_1.6.1 </a>
-<a class="download-btn" href="https://sfl.gl/j5XHEw" target="_blank">🧩SHIZUKU APK</a>
-<a class="download-btn" href="https://sfl.gl/IECImiZI" target="_blank">🔨 ZArchiver Pro </a>
-<a class="download-btn" href="https://sfl.gl/Lq4D5gu" target="_blank">📄 QuickEdit_1.12.6 </a>
-<a class="download-btn" href="https://safefileku.com/download/JV6aAMsLbf5xJ9dr" target="_blank"> ExaGear - Windows Emulator_3.0.1 </a>
-<a class="download-btn" href="https://safefileku.com/download/OvBbRK5xQPqnweqV" target="_blank"> gamemode </a>
-<a class="download-btn" href="https://safefileku.com/download/xHu4FURvz5ilPHBA" target="_blank"> Shizuku_13.6.0.apk </a>
-
+<!-- VIEWER -->
+<div class="viewer" id="viewer">
+  <span class="close" onclick="closeViewer()">✖</span>
+  <span class="nav prev" onclick="prevImg()">❮</span>
+  <img id="viewerImg">
+  <span class="nav next" onclick="nextImg()">❯</span>
 </div>
 
-<!-- ===== HOLOGRAM ===== -->
-<div class="section">
-<h2>HOLOGRAM FF</h2>
-<p> 𝘽𝙐𝙔 𝙆𝙀𝙔 𝙃𝙊𝙇𝙊𝙂𝙍𝘼𝙈 𝙒𝘼/𝙏𝙀𝙇𝙀<br>☟☟☟☟☟ </p>
-<p>STOP, KIRIM TXT INI KE ADIM, 𝙳𝚗𝚐𝚊𝚗 𝚌𝚊𝚛𝚊 𝚜𝚊𝚕𝚒𝚗 𝚝𝚡𝚝 𝚝𝚎𝚛𝚞𝚜 𝚔𝚒𝚛𝚒𝚖 𝚔𝚎 𝚊𝚍𝚖𝚒𝚗. <br> PESAN UNTUK ADMIN<br>
-Assalammualaikum, Hai min, saya minat membeli Hologram Yg tersedia, apakah ada min? </p>
-<a class="download-btn" href="https://wa.me/message/PIVLR5VMHEQHC1?" target="_blank">
-    𝘽𝙐𝙔 𝙋𝘼𝙎𝙎 𝙃𝙊𝙇𝙊𝙂𝙍𝘼𝙈 <br> 𝙅𝘼𝙇𝙐𝙍 𝙒𝘼
-</a>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
 
-<a class="download-btn" href="https://t.me/dezzmods" target="_blank">
-    𝘽𝙐𝙔 𝙋𝘼𝙎𝙎 𝙃𝙊𝙇𝙊𝙂𝙍𝘼𝙈 <br> 𝙅𝘼𝙇𝙐𝙍 𝙏𝙀𝙇𝙀
-</a>
+/* CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyBaneJ6aJod2I3cNuofct-QMTdeXyfxlps",
+  authDomain: "dezzpanel.firebaseapp.com",
+  projectId: "dezzpanel",
+  storageBucket: "dezzpanel.firebasestorage.app"
+};
 
-<p>𝙆𝙡𝙞𝙠 𝙩𝙤𝙢𝙗𝙤𝙡 𝙙𝙞 𝙗𝙖𝙬𝙖𝙝 𝙪𝙣𝙩𝙪𝙠 𝙢𝙚𝙣𝙙𝙤𝙬𝙣𝙡𝙤𝙖𝙙.<br> ʜᴏʟᴏɢʀᴀᴍ ғʀᴇᴇ ғɪʀᴇ ᴏʙʙ53</p>
-<a class="download-btn" href="https://www.mediafire.com/file/cw61xbt31riz35c/HOLOGRAM+SPECIAL+IDF+V1.apk/file" target="_blank"> HOLOGRAM SPECIAL IDF V1<br>PW Dm aja link di atas </a>
-<a class="download-btn" href="https://sfl.gl/8EiZw" target="_blank"> APK HOLOGRAM V1.1 PREM<br>PW:pwnyaapa </a>
-<a class="download-btn" href="https://sfl.gl/Z6JaK" target="_blank"> APK DELETE HOLOGRGRAM V1 -By DezZXMods </a>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-</div>
+let currentUser=null;
 
-<p> 𝙃𝙐𝘿 𝙎𝙀𝙏𝙄𝙉𝙂𝘼𝙉 𝙁𝙇𝘼𝘿𝙊 <br>#FFHUDT6O3jgVvs6ZPo7eO</p>
-
-<div class="section">
-<h2>DAGET 24 Jam<br>🤫SIAPA CEPAT DIA DAPAT🤫<br>☟☟☟☟☟</h2>
-<a class="download-btn" href="https://sfl.gl/MWWgMcm" target="_blank">Aku lagi sebar DANA Kaget nih! Yuk, sikat segera sebelum melayang 💸💸💸</a>
-<a class="download-btn" href="https://sfl.gl/4tQwg8z" target="_blank"> Aku lagi sebar DANA Kaget nih! Yuk, sikat segera sebelum melayang 💸💸💸 </a>
-
-</div>
-
-<footer>
-© 2026 DEZZ STORE • TOP HOLOGRAM CREATOR 🔥
-</footer>
-
-<script>
-
-/* ===== LOADING HILANG ===== */
-setTimeout(()=>{
- document.getElementById("loader").style.display="none";
-},3500);
-
-/* ===== PARTICLES BACKGROUND ===== */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let particles=[];
-
-for(let i=0;i<70;i++){
- particles.push({
-   x:Math.random()*canvas.width,
-   y:Math.random()*canvas.height,
-   r:Math.random()*2,
-   d:Math.random()*1
- });
+/* LOGIN */
+window.login = function(){
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+  .then(res=>{
+    currentUser=res.user;
+    alert("Login: "+res.user.displayName);
+  });
 }
 
-function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
- ctx.fillStyle="#5b6bff";
+/* PREVIEW */
+let selectedFiles=[];
+document.getElementById("images").addEventListener("change",e=>{
+  selectedFiles=[...e.target.files];
+  let html="";
+  selectedFiles.forEach(f=>{
+    let url=URL.createObjectURL(f);
+    html+=`<img src="${url}">`;
+  });
+  document.getElementById("preview").innerHTML=html;
+});
 
- particles.forEach(p=>{
-   ctx.beginPath();
-   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-   ctx.fill();
+/* UPLOAD */
+window.uploadMod = async function(){
+  if(!currentUser) return alert("Login dulu");
 
-   p.y+=p.d;
-   if(p.y>canvas.height){
-     p.y=0;
-     p.x=Math.random()*canvas.width;
-   }
- });
+  let title=titleInput.value;
+  let desc=descInput.value;
+  let link=linkInput.value;
 
- requestAnimationFrame(draw);
+  if(!title || !link) return alert("Isi data!");
+
+  let urls=[];
+
+  for(let file of selectedFiles){
+    let storageRef = ref(storage, "mods/"+Date.now()+"_"+file.name);
+    await uploadBytes(storageRef,file);
+    let url = await getDownloadURL(storageRef);
+    urls.push(url);
+  }
+
+  await addDoc(collection(db,"mods"),{
+    title,
+    desc,
+    link,
+    images:urls,
+    status:"approved"
+  });
+
+  alert("Upload sukses");
+  location.reload();
 }
 
-draw();
+/* LOAD */
+let viewerImgs=[],currentIndex=0;
+
+async function loadMods(){
+  const q=query(collection(db,"mods"),where("status","==","approved"));
+  const snap=await getDocs(q);
+
+  let html="";
+
+  snap.forEach(doc=>{
+    let d=doc.data();
+    let img=d.images?.[0] || "";
+
+    html+=`
+    <div class="card" onclick='openViewer(${JSON.stringify(d.images||[])})'>
+      <img src="${img}">
+      <div style="padding:8px">
+        <b>${d.title}</b>
+      </div>
+    </div>
+    `;
+  });
+
+  mods.innerHTML=html;
+}
+
+loadMods();
+
+/* SLIDER */
+window.openViewer = function(imgs){
+  viewerImgs=imgs;
+  currentIndex=0;
+  viewer.style.display="flex";
+  viewerImg.src=viewerImgs[0];
+}
+
+window.closeViewer = function(){
+  viewer.style.display="none";
+}
+
+window.nextImg = function(){
+  currentIndex=(currentIndex+1)%viewerImgs.length;
+  viewerImg.src=viewerImgs[currentIndex];
+}
+
+window.prevImg = function(){
+  currentIndex=(currentIndex-1+viewerImgs.length)%viewerImgs.length;
+  viewerImg.src=viewerImgs[currentIndex];
+}
 
 </script>
+
 </body>
 </html>
