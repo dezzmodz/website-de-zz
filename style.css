@@ -140,3 +140,13 @@ main{
     from{opacity:0;transform:translateY(20px);}
     to{opacity:1;transform:translateY(0);}
 }
+
+.card{
+    margin-bottom:15px;
+}
+
+.desc{
+    font-size:13px;
+    color:#b8c1ff;
+    margin-top:5px;
+}
