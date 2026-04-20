@@ -1,18 +1,18 @@
 // LOADING
 setTimeout(()=>{
  document.getElementById("loader").style.display="none";
-},3000);
+},3500);
 
-// PARTICLES
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
+/* ===== PARTICLES BACKGROUND ===== */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-let particles = [];
+let particles=[];
 
-for(let i=0;i<50;i++){
+for(let i=0;i<70;i++){
  particles.push({
    x:Math.random()*canvas.width,
    y:Math.random()*canvas.height,
@@ -23,6 +23,7 @@ for(let i=0;i<50;i++){
 
 function draw(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#5b6bff";
 
  particles.forEach(p=>{
    ctx.beginPath();
@@ -32,6 +33,7 @@ function draw(){
    p.y+=p.d;
    if(p.y>canvas.height){
      p.y=0;
+     p.x=Math.random()*canvas.width;
    }
  });
 
