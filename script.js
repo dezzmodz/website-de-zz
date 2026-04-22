@@ -1,83 +1,93 @@
 // LOADING
-setTimeout(()=>{
- document.getElementById("loader").style.display="none";
-},3500);
+setTimeout(() => {
+  document.getElementById("loader").style.opacity = "0";
+  setTimeout(()=>{
+    document.getElementById("loader").style.display = "none";
+  },500);
+}, 2500);
 
-/* ===== PARTICLES BACKGROUND ===== */
-const canvas=document.getElementById("particles");
-const ctx=canvas.getContext("2d");
+/* ===== PARTICLES BACKGROUND (SMOOTHER) ===== */
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let particles=[];
+let particles = [];
 
-for(let i=0;i<70;i++){
- particles.push({
-   x:Math.random()*canvas.width,
-   y:Math.random()*canvas.height,
-   r:Math.random()*2,
-   d:Math.random()*1
- });
+for (let i = 0; i < 90; i++) {
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 0.5,
+    d: Math.random() * 1.5 + 0.2
+  });
 }
 
-function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
- ctx.fillStyle="#5b6bff";
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
- particles.forEach(p=>{
-   ctx.beginPath();
-   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-   ctx.fill();
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.fillStyle = "rgba(91,107,255,0.7)";
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fill();
 
-   p.y+=p.d;
-   if(p.y>canvas.height){
-     p.y=0;
-     p.x=Math.random()*canvas.width;
-   }
- });
+    p.y += p.d;
 
- requestAnimationFrame(draw);
+    if (p.y > canvas.height) {
+      p.y = 0;
+      p.x = Math.random() * canvas.width;
+    }
+  });
+
+  requestAnimationFrame(draw);
 }
 
 draw();
-function tambahMod(){
 
-  const judul = document.getElementById("judul").value;
-  const deskripsi = document.getElementById("deskripsi").value;
-  const link = document.getElementById("link").value;
+/* ===== TAMBAH MOD ===== */
+function tambahMod() {
+  const judul = document.getElementById("judul");
+  const deskripsi = document.getElementById("deskripsi");
+  const link = document.getElementById("link");
 
-  if(!judul || !link){
+  if (!judul.value || !link.value) {
     alert("Isi judul & link!");
     return;
   }
 
   const data = {
-    judul,
-    deskripsi,
-    link
+    judul: judul.value,
+    deskripsi: deskripsi.value,
+    link: link.value
   };
 
   let mods = JSON.parse(localStorage.getItem("mods") || "[]");
-  mods.push(data);
+  mods.unshift(data); // biar yang baru di atas
   localStorage.setItem("mods", JSON.stringify(mods));
+
+  // reset form
+  judul.value = "";
+  deskripsi.value = "";
+  link.value = "";
 
   tampilkanMods();
 }
 
-// tampilkan saat load
-function tampilkanMods(){
+/* ===== TAMPILKAN MODS (ANIMATED) ===== */
+function tampilkanMods() {
   let mods = JSON.parse(localStorage.getItem("mods") || "[]");
 
   let html = "";
 
-  mods.forEach(m => {
+  mods.forEach((m, i) => {
     html += `
-    <div class="card">
+    <div class="card" style="animation: fadeUp 0.4s ease ${i * 0.05}s forwards; opacity:0;">
       <a class="download-btn" href="${m.link}" target="_blank">
         ${m.judul}
       </a>
-      <p class="desc">${m.deskripsi}</p>
+      <p class="desc">${m.deskripsi || "Tidak ada deskripsi"}</p>
     </div>
     `;
   });
@@ -86,3 +96,9 @@ function tampilkanMods(){
 }
 
 tampilkanMods();
+
+/* ===== RESPONSIVE CANVAS ===== */
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
