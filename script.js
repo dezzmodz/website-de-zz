@@ -1,24 +1,30 @@
 // LOADING
-setTimeout(() => {
-  document.getElementById("loader").style.opacity = "0";
-  setTimeout(()=>{
-    document.getElementById("loader").style.display = "none";
-  },500);
-}, 2500);
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const loader = document.getElementById("loader");
+    loader.style.opacity = "0";
+    setTimeout(() => {
+      loader.style.display = "none";
+    }, 500);
+  }, 1500);
+});
 
-/* ===== PARTICLES BACKGROUND (SMOOTHER) ===== */
+// PARTICLES
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const scale = window.devicePixelRatio;
+canvas.width = window.innerWidth * scale;
+canvas.height = window.innerHeight * scale;
+ctx.scale(scale, scale);
 
 let particles = [];
+let jumlah = window.innerWidth < 500 ? 40 : 90;
 
-for (let i = 0; i < 90; i++) {
+for (let i = 0; i < jumlah; i++) {
   particles.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
     r: Math.random() * 2 + 0.5,
     d: Math.random() * 1.5 + 0.2
   });
@@ -35,9 +41,9 @@ function draw() {
 
     p.y += p.d;
 
-    if (p.y > canvas.height) {
+    if (p.y > window.innerHeight) {
       p.y = 0;
-      p.x = Math.random() * canvas.width;
+      p.x = Math.random() * window.innerWidth;
     }
   });
 
@@ -46,36 +52,18 @@ function draw() {
 
 draw();
 
-/* ===== TAMBAH MOD ===== */
-function tambahMod() {
-  const judul = document.getElementById("judul");
-  const deskripsi = document.getElementById("deskripsi");
-  const link = document.getElementById("link");
-
-  if (!judul.value || !link.value) {
-    alert("Isi judul & link!");
-    return;
-  }
-
-  const data = {
-    judul: judul.value,
-    deskripsi: deskripsi.value,
-    link: link.value
-  };
-
-  let mods = JSON.parse(localStorage.getItem("mods") || "[]");
-  mods.unshift(data); // biar yang baru di atas
-  localStorage.setItem("mods", JSON.stringify(mods));
-
-  // reset form
-  judul.value = "";
-  deskripsi.value = "";
-  link.value = "";
-
-  tampilkanMods();
+// ESCAPE HTML
+function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, (m) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }[m]));
 }
 
-/* ===== TAMPILKAN MODS (ANIMATED) ===== */
+// TAMPILKAN MOD
 function tampilkanMods() {
   let mods = JSON.parse(localStorage.getItem("mods") || "[]");
 
@@ -84,10 +72,10 @@ function tampilkanMods() {
   mods.forEach((m, i) => {
     html += `
     <div class="card" style="animation: fadeUp 0.4s ease ${i * 0.05}s forwards; opacity:0;">
-      <a class="download-btn" href="${m.link}" target="_blank">
-        ${m.judul}
+      <a class="download-btn" href="${m.link}" target="_blank" rel="noopener noreferrer nofollow">
+        ${escapeHTML(m.judul)}
       </a>
-      <p class="desc">${m.deskripsi || "Tidak ada deskripsi"}</p>
+      <p class="desc">${escapeHTML(m.deskripsi || "Tidak ada deskripsi")}</p>
     </div>
     `;
   });
@@ -96,9 +84,3 @@ function tampilkanMods() {
 }
 
 tampilkanMods();
-
-/* ===== RESPONSIVE CANVAS ===== */
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
