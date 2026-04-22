@@ -1,7 +1,9 @@
-// LOADING
+/* ================= LOADING ================= */
 window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  if (!loader) return;
+
   setTimeout(() => {
-    const loader = document.getElementById("loader");
     loader.style.opacity = "0";
     setTimeout(() => {
       loader.style.display = "none";
@@ -9,52 +11,74 @@ window.addEventListener("load", () => {
   }, 1500);
 });
 
-// PARTICLES
+
+/* ================= PARTICLES ================= */
 const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
 
-const scale = window.devicePixelRatio;
-canvas.width = window.innerWidth * scale;
-canvas.height = window.innerHeight * scale;
-ctx.scale(scale, scale);
+if (canvas) {
+  const ctx = canvas.getContext("2d");
 
-let particles = [];
-let jumlah = window.innerWidth < 500 ? 40 : 90;
+  function resizeCanvas() {
+    const scale = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * scale;
+    canvas.height = window.innerHeight * scale;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  }
 
-for (let i = 0; i < jumlah; i++) {
-  particles.push({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() * 2 + 0.5,
-    d: Math.random() * 1.5 + 0.2
-  });
-}
+  resizeCanvas();
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let particles = [];
+  let jumlah = window.innerWidth < 500 ? 40 : 90;
 
-  particles.forEach(p => {
-    ctx.beginPath();
-    ctx.fillStyle = "rgba(91,107,255,0.7)";
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fill();
-
-    p.y += p.d;
-
-    if (p.y > window.innerHeight) {
-      p.y = 0;
-      p.x = Math.random() * window.innerWidth;
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < jumlah; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 2 + 0.5,
+        d: Math.random() * 1.5 + 0.2
+      });
     }
-  });
+  }
 
-  requestAnimationFrame(draw);
+  initParticles();
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.fillStyle = "rgba(91,107,255,0.7)";
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      p.y += p.d;
+
+      if (p.y > window.innerHeight) {
+        p.y = 0;
+        p.x = Math.random() * window.innerWidth;
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  window.addEventListener("resize", () => {
+    resizeCanvas();
+    jumlah = window.innerWidth < 500 ? 40 : 90;
+    initParticles();
+  });
 }
 
-draw();
 
-// ESCAPE HTML
+/* ================= SECURITY (ANTI XSS) ================= */
 function escapeHTML(str) {
-  return str.replace(/[&<>"']/g, (m) => ({
+  return String(str).replace(/[&<>"']/g, (m) => ({
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -63,9 +87,19 @@ function escapeHTML(str) {
   }[m]));
 }
 
-// TAMPILKAN MOD
+
+/* ================= TAMPILKAN MOD ================= */
 function tampilkanMods() {
-  let mods = JSON.parse(localStorage.getItem("mods") || "[]");
+  const container = document.getElementById("modList");
+  if (!container) return;
+
+  let mods = [];
+
+  try {
+    mods = JSON.parse(localStorage.getItem("mods") || "[]");
+  } catch {
+    mods = [];
+  }
 
   let html = "";
 
@@ -80,7 +114,48 @@ function tampilkanMods() {
     `;
   });
 
-  document.getElementById("modList").innerHTML = html;
+  container.innerHTML = html;
 }
 
+
+/* ================= TAMBAH MOD ================= */
+function tambahMod() {
+  const judul = document.getElementById("judul");
+  const deskripsi = document.getElementById("deskripsi");
+  const link = document.getElementById("link");
+
+  if (!judul || !link) return;
+
+  if (!judul.value.trim() || !link.value.trim()) {
+    alert("Isi judul & link!");
+    return;
+  }
+
+  const data = {
+    judul: judul.value.trim(),
+    deskripsi: deskripsi.value.trim(),
+    link: link.value.trim()
+  };
+
+  let mods = [];
+
+  try {
+    mods = JSON.parse(localStorage.getItem("mods") || "[]");
+  } catch {
+    mods = [];
+  }
+
+  mods.unshift(data);
+  localStorage.setItem("mods", JSON.stringify(mods));
+
+  // reset form
+  judul.value = "";
+  deskripsi.value = "";
+  link.value = "";
+
+  tampilkanMods();
+}
+
+
+/* ================= INIT ================= */
 tampilkanMods();
