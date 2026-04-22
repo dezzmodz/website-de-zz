@@ -1,13 +1,14 @@
 /* ===== GLOBAL ===== */
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family:'Segoe UI',sans-serif;
     text-align:center;
     background:linear-gradient(135deg,#050522,#0b0b3a,#111166);
     background-size:400% 400%;
     animation:bgmove 10s infinite alternate;
     color:white;
     overflow-x:hidden;
+    scroll-behavior:smooth;
 }
 
 @keyframes bgmove{
@@ -15,7 +16,7 @@ body{
     100%{background-position:right;}
 }
 
-/* glow layer biar lebih depth */
+/* glow layer */
 body::before{
     content:"";
     position:fixed;
@@ -38,6 +39,9 @@ header{
     backdrop-filter:blur(15px);
     border-bottom:1px solid rgba(255,255,255,0.1);
     box-shadow:0 0 30px rgba(0,0,255,0.3);
+    position:sticky;
+    top:0;
+    z-index:1000;
 }
 
 header h1{
@@ -47,7 +51,6 @@ header h1{
     text-shadow:0 0 15px #4d6bff;
 }
 
-/* efek teks glow animasi */
 header h1::after{
     content:"";
     display:block;
@@ -83,7 +86,6 @@ header h1::after{
     transition:0.3s;
 }
 
-/* hover section subtle */
 .section:hover{
     transform:translateY(-3px);
     box-shadow:0 0 35px rgba(90,110,255,0.4);
@@ -98,13 +100,15 @@ header h1::after{
 /* ===== CARD ===== */
 .card{
     margin-bottom:15px;
-    padding:10px;
+    padding:12px;
     border-radius:12px;
+    background:rgba(255,255,255,0.03);
     transition:0.3s;
 }
 
 .card:hover{
-    transform:scale(1.02);
+    transform:scale(1.03);
+    box-shadow:0 0 20px rgba(90,110,255,0.4);
 }
 
 /* ===== BUTTON ===== */
@@ -120,6 +124,7 @@ header h1::after{
     letter-spacing:0.5px;
     position:relative;
     overflow:hidden;
+    cursor:pointer;
 
     background:linear-gradient(45deg,#1a2bff,#6a7bff);
     box-shadow:
@@ -129,7 +134,7 @@ header h1::after{
     transition:0.3s;
 }
 
-/* efek shine lewat */
+/* shine effect */
 .download-btn::before{
     content:"";
     position:absolute;
@@ -145,7 +150,6 @@ header h1::after{
     left:100%;
 }
 
-/* hover neon */
 .download-btn:hover{
     transform:translateY(-4px) scale(1.03);
     box-shadow:
@@ -153,9 +157,9 @@ header h1::after{
         0 0 40px #5b6bff;
 }
 
-/* klik */
 .download-btn:active{
-    transform:scale(0.96);
+    transform:scale(0.95);
+    box-shadow:0 0 10px #00ffcc;
 }
 
 /* ===== DESC ===== */
@@ -174,7 +178,7 @@ footer{
     text-shadow:0 0 8px rgba(120,140,255,0.6);
 }
 
-/* ===== LOADER (UPGRADE) ===== */
+/* ===== LOADER ===== */
 #loader{
     position:fixed;
     top:0;
@@ -190,7 +194,6 @@ footer{
     color:#6b7cff;
 }
 
-/* spinner animasi */
 #loader::after{
     content:"";
     width:40px;
