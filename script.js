@@ -19,37 +19,85 @@ const dataKey = [
 
 function tampilKey(list){
   let output = "";
-  list.forEach((d, i) => {
+
+  list.forEach((d) => {
     output += `
     <div class="card">
-      <p>NAMA PEMBELI : ${d.nama}</p>
-      <p>USER : ${d.user} 
-        <button onclick="copyText('${d.user}')">Salin</button>
+      <p><b>NAMA PEMBELI:</b> ${d.nama || "-"}</p>
+
+      <p><b>USER:</b> ${d.user || "-"} 
+        <button onclick="copyText('${d.user || ''}')">Salin</button>
       </p>
-      <p>PASS : ${d.pass} 
-        <button onclick="copyText('${d.pass}')">Salin</button>
+
+      <p><b>PASS:</b> ${d.pass || ""} 
+        <button onclick="copyText('${d.pass || ''}')">Salin</button>
       </p>
-      <p>AKTIF : ${d.aktif}</p>
-      <p>EXPIRE : ${d.expire}</p>
-      <p>HARGA : ${d.harga}</p>
+
+      <p><b>AKTIF:</b> ${d.aktif || "-"}</p>
+      <p><b>EXPIRE:</b> ${d.expire || "-"}</p>
+      <p><b>HARGA:</b> ${d.harga || "-"}</p>
     </div>
     `;
   });
-  document.getElementById("listKey").innerHTML = output;
+
+  document.getElementById("listKey").innerHTML = output || "<div class='card'>❌ Data kosong</div>";
 }
 
 function copyText(text){
-  navigator.clipboard.writeText(text);
-  alert("Berhasil disalin: " + text);
+  if(!text) return;
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+
+  showToast("✔ Tersalin: " + text);
 }
 
+function showToast(msg){
+  let t = document.createElement("div");
+  t.innerText = msg;
+
+  t.style.cssText = `
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#00ffcc;
+    color:#000;
+    padding:10px 15px;
+    border-radius:8px;
+    font-size:14px;
+    z-index:9999;
+  `;
+
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),1500);
+}
+
+let timeout;
+
 function cariKey(){
-  let input = document.getElementById("search").value.toLowerCase();
-  let hasil = dataKey.filter(d =>
-    d.nama.toLowerCase().includes(input) ||
-    d.user.toLowerCase().includes(input)
-  );
-  tampilKey(hasil);
+  clearTimeout(timeout);
+
+  timeout = setTimeout(() => {
+    let input = document.getElementById("search").value.toLowerCase().trim();
+
+    if(!input){
+      tampilKey(dataKey);
+      return;
+    }
+
+    let hasil = dataKey.filter(d =>
+      (d.nama && d.nama.toLowerCase().includes(input)) ||
+      (d.user && d.user.toLowerCase().includes(input)) ||
+      (d.pass && d.pass.toLowerCase().includes(input))
+    );
+
+    tampilKey(hasil);
+  }, 300);
 }
 
 // tampil awal
