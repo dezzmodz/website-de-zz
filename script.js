@@ -18,48 +18,72 @@ const dataKey = [
 ];
 
 function tampilKey(list){
-  let output = "";
+  const box = document.getElementById("listKey");
 
-  list.forEach((d) => {
-    output += `
+  if(!list || list.length === 0){
+    box.innerHTML = "<div class='card'>❌ Data kosong</div>";
+    return;
+  }
+
+  let html = "";
+
+  list.forEach((d, i) => {
+    html += `
     <div class="card">
-      <p><b>NAMA PEMBELI:</b> ${d.nama || "-"}</p>
+      <p><b>NAMA PEMBELI:</b> ${d.nama ?? "-"}</p>
 
-      <p><b>USER:</b> ${d.user || "-"} 
-        <button onclick="copyText('${d.user || ''}')">Salin</button>
+      <p><b>USER:</b> ${d.user ?? "-"}
+        <button onclick="copyText(${i}, 'user')">Salin</button>
       </p>
 
-      <p><b>PASS:</b> ${d.pass || ""} 
-        <button onclick="copyText('${d.pass || ''}')">Salin</button>
+      <p><b>PASS:</b> ${d.pass ?? "-"}
+        <button onclick="copyText(${i}, 'pass')">Salin</button>
       </p>
 
-      <p><b>AKTIF:</b> ${d.aktif || "-"}</p>
-      <p><b>EXPIRE:</b> ${d.expire || "-"}</p>
-      <p><b>HARGA:</b> ${d.harga || "-"}</p>
+      <p><b>AKTIF:</b> ${d.aktif ?? "-"}</p>
+      <p><b>EXPIRE:</b> ${d.expire ?? "-"}</p>
+      <p><b>HARGA:</b> ${d.harga ?? "-"}</p>
     </div>
     `;
   });
 
-  document.getElementById("listKey").innerHTML = output || "<div class='card'>❌ Data kosong</div>";
+  box.innerHTML = html;
 }
 
-function copyText(text){
-  if(!text) return;
+// COPY (ANTI BUG + FALLBACK)
+function copyText(index, type){
+  const value = dataKey[index]?.[type];
 
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  document.body.appendChild(textarea);
-  textarea.select();
+  if(!value){
+    showToast("❌ Data kosong");
+    return;
+  }
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(value)
+      .then(() => showToast("✔ Tersalin: " + value))
+      .catch(() => fallbackCopy(value));
+  } else {
+    fallbackCopy(value);
+  }
+}
+
+function fallbackCopy(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
   document.execCommand("copy");
-  document.body.removeChild(textarea);
+  document.body.removeChild(ta);
 
   showToast("✔ Tersalin: " + text);
 }
 
+// TOAST
 function showToast(msg){
   let t = document.createElement("div");
-  t.innerText = msg;
 
+  t.innerText = msg;
   t.style.cssText = `
     position:fixed;
     bottom:20px;
@@ -77,28 +101,29 @@ function showToast(msg){
   setTimeout(()=>t.remove(),1500);
 }
 
+// SEARCH (ANTI ERROR + SMOOTH)
 let timeout;
 
 function cariKey(){
   clearTimeout(timeout);
 
   timeout = setTimeout(() => {
-    let input = document.getElementById("search").value.toLowerCase().trim();
+    const input = document.getElementById("search").value.toLowerCase().trim();
 
     if(!input){
       tampilKey(dataKey);
       return;
     }
 
-    let hasil = dataKey.filter(d =>
-      (d.nama && d.nama.toLowerCase().includes(input)) ||
-      (d.user && d.user.toLowerCase().includes(input)) ||
-      (d.pass && d.pass.toLowerCase().includes(input))
+    const hasil = dataKey.filter(d =>
+      (d.nama ?? "").toLowerCase().includes(input) ||
+      (d.user ?? "").toLowerCase().includes(input) ||
+      (d.pass ?? "").toLowerCase().includes(input)
     );
 
     tampilKey(hasil);
-  }, 300);
+  }, 250);
 }
 
-// tampil awal
+// INIT
 tampilKey(dataKey);
